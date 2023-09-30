@@ -9,3 +9,5 @@ htmlcov
 .DS_Store
 **/*.log
 stats.xml
+/orders/alembic/versions/
+.idea

@@ -34,9 +34,25 @@ curl -s -XPOST  "${STD_APP_URL}/products" \
     -H 'Content-Type: application/json' \
     -d '{"id": "the_odyssey", "title": "The Odyssey", "passenger_capacity": 101, "maximum_speed": 5, "in_stock": 10}'
 echo
+
+echo "=== Creating a product id: the_odyssey2 ==="
+curl -s -XPOST  "${STD_APP_URL}/products" \
+    -H 'accept: application/json' \
+    -H 'Content-Type: application/json' \
+    -d '{"id": "the_odyssey2", "title": "The Odyssey 2", "passenger_capacity": 11, "maximum_speed": 10, "in_stock": 1}'
+echo
+
 # Test: Get Product
 echo "=== Getting product id: the_odyssey ==="
 curl -s "${STD_APP_URL}/products/the_odyssey" | jq .
+
+# Test: Get Second Product
+echo "=== Getting product id: the_odyssey2 ==="
+curl -s "${STD_APP_URL}/products/the_odyssey2" | jq .
+
+echo "=== Deleting product id: the_odyssey2 ==="
+curl -s -XDELETE "${STD_APP_URL}/products/the_odyssey2" | jq .
+echo
 
 # Test: Create Order
 echo "=== Creating Order ==="
