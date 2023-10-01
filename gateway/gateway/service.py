@@ -98,6 +98,15 @@ class GatewayService(object):
             json.dumps({'id': product_data['id']}), mimetype='application/json'
         )
 
+
+    @http("GET", "/orders")
+    def list_orders(self, request):
+        """Lists all existing orders
+        """
+        order_list = self.orders_rpc.list_orders()
+        return Response(json.dumps(order_list),
+                        mimetype='application/json')
+
     @http("GET", "/orders/<int:order_id>", expected_exceptions=OrderNotFound)
     def get_order(self, request, order_id):
         """Gets the order details for the order given by `order_id`.
