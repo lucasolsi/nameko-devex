@@ -124,7 +124,20 @@ scenarios:
     - if: '"${product_id}" == "NOT_FOUND"'
       then:
         - action: continue
-  
+
+    # 6. List orders
+    - url: /orders
+      label: list-orders
+      think-time: uniform(0s, 0s)
+      method: GET
+
+      assert:
+      - contains:
+        - 200
+        subject: http-code
+        not: false
+
+
 reporting:
 - module: final-stats
   dump-xml: stats.xml
