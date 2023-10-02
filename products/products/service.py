@@ -5,6 +5,7 @@ from nameko.rpc import rpc
 
 from products import dependencies, schemas
 
+from caching.cache_service import CacheService
 
 logger = logging.getLogger(__name__)
 
@@ -14,10 +15,16 @@ class ProductsService:
     name = 'products'
 
     storage = dependencies.Storage()
+    cache = CacheService()
 
     @rpc
     def get(self, product_id):
+        cached_product = self.cache.retrieve_cached_data(product_id)
+        if cached_product is not None:
+            return cached_product
         product = self.storage.get(product_id)
+
+        self.cache.cache_data(product_id, product, expiration=3600)
         return schemas.Product().dump(product).data
 
     @rpc

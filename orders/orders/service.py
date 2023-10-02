@@ -6,20 +6,29 @@ from orders.exceptions import NotFound
 from orders.models import DeclarativeBase, Order, OrderDetail
 from orders.schemas import OrderSchema
 
+from caching.cache_service import CacheService
 
 class OrdersService:
     name = 'orders'
+
+    def __init__(self):
+        self.cache = CacheService()
 
     db = DatabaseSession(DeclarativeBase)
     event_dispatcher = EventDispatcher()
 
     @rpc
     def get_order(self, order_id):
+        cached_order = self.cache.retrieve_cached_data(order_id)
+        if cached_order is not None:
+            return cached_order
+        
         order = self.db.query(Order).get(order_id)
 
         if not order:
             raise NotFound('Order with id {} not found'.format(order_id))
 
+        self.cache.cache_data(order_id, OrderSchema().dump(order).data, expiration = 3600)
         return OrderSchema().dump(order).data
 
     @rpc
