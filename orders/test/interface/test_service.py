@@ -14,6 +14,28 @@ def order(db_session):
     db_session.commit()
     return order
 
+@pytest.fixture
+def orders(db_session):
+    orders = []
+    for _ in range(3):
+        order = Order()
+        db_session.add(order)
+        orders.append(order)
+    db_session.commit()
+    return orders
+
+
+@pytest.mark.usefixtures('db_session')
+def test_list_orders(orders_rpc, orders):
+    response = orders_rpc.list_orders()
+
+    assert isinstance(response, list)
+
+    assert len(response) == len(orders)
+
+    for i, order in enumerate(orders):
+        expected_order_data = OrderSchema().dump(order).data
+        assert response[i] == expected_order_data
 
 @pytest.fixture
 def order_details(db_session, order):
