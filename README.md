@@ -1,3 +1,6 @@
+# Performance test result:
+[Blazemeter](https://a.blazemeter.com/app/?public-token=aHBxCvcUT8CjPLX1VNkBosY1X4dGDvl3LatvZvq8PFIVcQvgG3#/accounts/-1/workspaces/-1/projects/-1/sessions/r-ext-651d5f366e105277568627/summary/summary)
+
 # Nameko Examples
 ![Airship Ltd](airship.png)
 ## Airship Ltd

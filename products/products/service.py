@@ -40,9 +40,12 @@ class ProductsService:
     @rpc
     def delete(self, product_id):
         self.storage.delete(product_id)
+        self.cache.remove_from_cache(product_id)
 
     @event_handler('orders', 'order_created')
     def handle_order_created(self, payload):
         for product in payload['order']['order_details']:
+            product_id = product['product_id']
+            self.cache.remove_from_cache(product_id)
             self.storage.decrement_stock(
                 product['product_id'], product['quantity'])

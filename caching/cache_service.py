@@ -17,3 +17,6 @@ class CacheService:
             return json.loads(cached_data)
         
         return None
+    
+    def remove_from_cache(self, key):
+        return self.redis_client.delete(key)
