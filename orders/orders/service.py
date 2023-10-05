@@ -28,21 +28,22 @@ class OrdersService:
         if not order:
             raise NotFound('Order with id {} not found'.format(order_id))
 
-        self.cache.cache_data(order_id, OrderSchema().dump(order).data, expiration = 3600)
-        return OrderSchema().dump(order).data
+        serialized_order = OrderSchema().dump(order).data
+        self.cache.cache_data(order_id, serialized_order, expiration = 3600)
+        return serialized_order
 
     @rpc
     def create_order(self, order_details):
-        order = Order(
-            order_details=[
-                OrderDetail(
-                    product_id=order_detail['product_id'],
-                    price=order_detail['price'],
-                    quantity=order_detail['quantity']
-                )
-                for order_detail in order_details
-            ]
-        )
+        order_details_products = [
+            OrderDetail(
+                product_id = order_detail['product_id'],
+                price = order_detail['price'],
+                quantity = order_detail['quantity']
+            )
+            for order_detail in order_details
+        ]
+
+        order = Order(order_details=order_details_products)
         self.db.add(order)
         self.db.commit()
 
@@ -64,8 +65,10 @@ class OrdersService:
         order = self.db.query(Order).get(order['id'])
 
         for order_detail in order.order_details:
-            order_detail.price = order_details[order_detail.id]['price']
-            order_detail.quantity = order_details[order_detail.id]['quantity']
+            if order_detail.id in order_details:
+                detail = order_details[order_detail.id]
+                order_detail.price = detail['price']
+                order_detail.quantity = detail['quantity']
 
         self.db.commit()
         return OrderSchema().dump(order).data

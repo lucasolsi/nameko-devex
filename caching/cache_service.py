@@ -20,3 +20,9 @@ class CacheService:
     
     def remove_from_cache(self, key):
         return self.redis_client.delete(key)
+
+    def remove_list_from_cache(self, keys):
+        with self.redis_client.pipeline() as pipe:
+            for key in keys:
+                pipe.delete(key)
+            pipe.execute()

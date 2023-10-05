@@ -1,6 +1,16 @@
 # Performance test result:
 [Blazemeter](https://a.blazemeter.com/app/?public-token=aHBxCvcUT8CjPLX1VNkBosY1X4dGDvl3LatvZvq8PFIVcQvgG3#/accounts/-1/workspaces/-1/projects/-1/sessions/r-ext-651d5f366e105277568627/summary/summary)
 
+# Questions:
+- Why is performance degrading as the test run longer?
+> Lack of database indexing; Lack of caching; Too much serialization/deserialization, database access implementation not so good.
+
+
+
+- How do you fix it?
+> Introducing caching for frequently used resources, optimizing serialization and deserialization, altering queries to run batch database operations when applicable and minimizing redundant database queries.
+
+
 # Nameko Examples
 ![Airship Ltd](airship.png)
 ## Airship Ltd
